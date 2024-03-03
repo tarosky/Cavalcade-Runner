@@ -6,7 +6,8 @@ function init_healthcheck($option)
 {
     global $ni_count, $maintenance_path;
 
-    list($ni_count, $maintenance_path) = explode(',', $option);
+    list($c, $maintenance_path) = explode(',', $option);
+    $ni_count = intval($c);
 }
 
 function check_nicount()
@@ -26,7 +27,7 @@ function check_nicount()
             'network interface count does not match',
             [
                 'count' => $ni_count,
-                'interfaces' => join(',', array_keys(net_get_interfaces($nis))),
+                'interfaces' => join(',', array_keys($nis)),
             ],
         ),
     ];
