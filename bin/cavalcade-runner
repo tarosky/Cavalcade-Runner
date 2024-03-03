@@ -4,6 +4,7 @@
 namespace HM\Cavalcade\Runner;
 
 use Exception;
+use Throwable;
 
 include dirname(__DIR__) . '/autoload.php';
 
@@ -79,14 +80,16 @@ try {
         'reason' => $e->getMessage(),
         'signal' => $e->getCode(),
     ]);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $log->fatal($e->getMessage(), ['trace' => $e->getTraceAsString()]);
     unlink($pid_file);
     exit(1);
 } finally {
     $log->info('process exited gracefully');
     unlink($pid_file);
-    @fclose($lockfile);
+    if (isset($lockfile)) {
+        @fclose($lockfile);
+    }
 }
 
 function file_locked($log, $lockfile)
