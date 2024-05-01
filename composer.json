@@ -14,13 +14,13 @@
     }
   ],
   "require": {
-    "php": ">=7.3",
+    "php": ">=7.4",
     "ext-pcntl": "*",
     "ext-pdo_mysql": "*"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": ">=3.5",
-    "phpunit/phpunit": "9.3.9",
+    "phpunit/phpunit": "9.6.19",
     "yoast/phpunit-polyfills": "^1.1"
   },
   "bin": [
