@@ -10,6 +10,7 @@ mkdir -p /wp /wp-develop /wp-tests
 if [ "$wp_version" == trunk ]; then
     tmp="$(mktemp)"
     tmpd="$(mktemp -d)"
+    # shellcheck disable=SC2064
     trap "rm -fr $tmp $tmpd" EXIT
     curl -fsSL https://wordpress.org/nightly-builds/wordpress-latest.zip > "$tmp"
     unzip -q -d "$tmpd" "$tmp"
@@ -20,6 +21,7 @@ fi
 
 tmp_caval="$(mktemp)"
 tmpd_caval="$(mktemp -d)"
+# shellcheck disable=SC2064
 trap "rm -fr $tmp_caval $tmpd_caval" EXIT
 curl -fsSL \
   "https://github.com/tarosky/Cavalcade/releases/download/build-$cavalcade_version/cavalcade.build-$cavalcade_version.zip" \
@@ -35,10 +37,11 @@ chown -R hostuser: /wp
 if [ "$wp_version" == trunk ]; then
     echo master > /wp_version
 else
+    # shellcheck disable=SC2016
     php -r 'require "/wp/wp-includes/version.php"; echo $wp_version;' > /wp_version
 fi
 
-curl -fsSL https://github.com/WordPress/wordpress-develop/archive/$(< /wp_version).tar.gz | tar --strip-components=1 -zxmC /wp-develop
+curl -fsSL "https://github.com/WordPress/wordpress-develop/archive/$(< /wp_version).tar.gz" | tar --strip-components=1 -zxmC /wp-develop
 
 cp -a /wp-develop/tests/phpunit/{includes,data} /wp-tests
 cp -a /wp-develop/wp-tests-config-sample.php /wp-tests/wp-tests-config.php

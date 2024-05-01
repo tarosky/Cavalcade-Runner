@@ -1,5 +1,9 @@
-export USER_ID="$(id -u)"
-export GROUP_ID="$(id -g)"
+#!/bin/bash
+
+USER_ID="$(id -u)"
+GROUP_ID="$(id -g)"
+export USER_ID
+export GROUP_ID
 export PHP_VERSION="${PHP_VERSION:-7.3}"
 export WP_VERSION="${WP_VERSION:-5.9.4}"
 export WP_MULTISITE="${WP_MULTISITE:-0}"

@@ -9,6 +9,7 @@ runner_command='bin/cavalcade-runner-test -l work/log/cavalcade-runner.log -p wo
 
 mkdir -p work
 mkfifo "$ctrl_fifo" "$ctrl_done_fifo"
+# shellcheck disable=SC2064
 trap "rm -f $ctrl_fifo $ctrl_done_fifo" EXIT
 pid=0
 

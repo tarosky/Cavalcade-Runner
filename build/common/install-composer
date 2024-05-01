@@ -3,6 +3,7 @@
 set -eu
 
 composer_php_tmp="$(mktemp)"
+# shellcheck disable=SC2064
 trap "rm -f $composer_php_tmp" EXIT
 
 expected_checksum="$(curl -fsSL https://composer.github.io/installer.sig)"

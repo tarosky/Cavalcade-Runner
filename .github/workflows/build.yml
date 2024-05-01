@@ -92,6 +92,9 @@ jobs:
         path: work/BUILD_NUMBER
 
   release:
+    env:
+      # Hide warning: "Context access might be invalid: BUILD_NUMBER"
+      BUILD_NUMBER: null
     needs:
     - test
     - build
