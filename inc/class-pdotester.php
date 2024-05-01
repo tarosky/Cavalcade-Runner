@@ -9,7 +9,7 @@ class PDOTester extends PDO
     private static $next_error = null;
     private static $repeating_error = null;
 
-    public function prepare($query, $options = [])
+    public function prepare(string $query, array $options = []): \PDOStatement | false
     {
         if (self::$next_error !== null) {
             $msg = self::$next_error;
