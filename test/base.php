@@ -78,7 +78,7 @@ abstract class CavalcadeRunner_TestCase extends WP_UnitTestCase
         file_get_contents(RUNNER_CTRL_DONE_FIFO);
     }
 
-    function setUp(): void
+    protected function setUp(): void
     {
         global $wpdb;
 
@@ -153,14 +153,14 @@ abstract class CavalcadeRunner_TestCase extends WP_UnitTestCase
         file_get_contents(RUNNER_CTRL_DONE_FIFO);
 
         # Close files used for communication.
-        @fclose($this->lockfile);
+        // @fclose($this->lockfile);
         @unlink(WPTEST_WPCLI_FIFO);
         @unlink(WPCLI_WPTEST_FIFO);
         @unlink(WPTEST_RUNNER_FIFO);
         @unlink(RUNNER_WPTEST_FIFO);
     }
 
-    function tearDown(): void
+    protected function tearDown(): void
     {
         $this->exit_runner();
 

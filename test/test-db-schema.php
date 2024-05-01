@@ -4,7 +4,7 @@ namespace HM\Cavalcade\Runner\Tests;
 
 class Test_DB_Schema extends CavalcadeRunner_TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         global $wpdb;
 

@@ -29,7 +29,7 @@ class Test_Abandoned_Jobs extends CavalcadeRunner_TestCase
         ));
     }
 
-    function test_abandoned_single_job()
+    public function test_abandoned_single_job()
     {
         wp_schedule_single_event(time(), JOB, [__FUNCTION__]);
         $this->set_running(JOB);
@@ -50,7 +50,7 @@ class Test_Abandoned_Jobs extends CavalcadeRunner_TestCase
         $this->assertEquals(1, substr_count($log, 'job completed'));
     }
 
-    function test_abandoned_schedule_job()
+    public function test_abandoned_schedule_job()
     {
         wp_schedule_event(time(), RECUR_HOURLY, JOB2, [__FUNCTION__]);
         $this->set_running(JOB2);
