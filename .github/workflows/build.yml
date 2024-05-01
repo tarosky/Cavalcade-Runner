@@ -25,7 +25,7 @@ jobs:
         - latest
         - trunk
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
     - name: set PHP_VERSION
       run: echo "PHP_VERSION=${{matrix.php-version}}" >> $GITHUB_ENV
     - name: set WP_VERSION
@@ -36,13 +36,13 @@ jobs:
     - run: build/run-test
     - name: Upload Test Logs
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
         name: test-logs-php${{matrix.php-version}}-wp${{matrix.wp-version}}-ms${{matrix.wp-multisite}}
         path: work/test-logs
     - name: Upload Unit Test Results
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
         name: test-result-php${{matrix.php-version}}-wp${{matrix.wp-version}}-ms${{matrix.wp-multisite}}
         path: work/test-result.xml
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     if: success() || failure()
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@main
       with:
         path: artifacts
     - name: Show artifacts
@@ -68,9 +68,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
     - name: Generate build number
-      uses: einaregilsson/build-number@v3
+      uses: onyxmueller/build-tag-number@main
       with:
         token: ${{secrets.GITHUB_TOKEN}}
         prefix: build_number_generator
@@ -82,11 +82,11 @@ jobs:
       run: echo "build-$BUILD_NUMBER" > ./VERSION
     - run: build/build-image
     - run: build/run-package
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@main
       with:
         name: artifact
         path: work/cavalcade-runner.zip
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@main
       with:
         name: build-number
         path: work/BUILD_NUMBER
@@ -101,10 +101,10 @@ jobs:
     if: github.ref == 'refs/heads/forked/master'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@main
       with:
         name: artifact
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@main
       with:
         name: build-number
     - name: Show artifacts
@@ -112,7 +112,7 @@ jobs:
     - name: set BUILD_NUMBER
       run: echo "BUILD_NUMBER=$(< ./BUILD_NUMBER)" >> $GITHUB_ENV
     - id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@main
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
@@ -120,7 +120,7 @@ jobs:
         release_name: Build ${{env.BUILD_NUMBER}}
         draft: false
         prerelease: false
-    - uses: actions/upload-release-asset@v1
+    - uses: actions/upload-release-asset@main
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
