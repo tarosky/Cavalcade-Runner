@@ -10,7 +10,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         # Never open gate at this time.
     }
 
-    function test_normal()
+    public function test_normal()
     {
         file_put_contents(PUBLIC_IP, EIP);
         flock($this->lockfile, LOCK_UN);
@@ -19,7 +19,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFileExists(RUNNER_STARTED);
     }
 
-    function test_wait_for_eip()
+    public function test_wait_for_eip()
     {
         flock($this->lockfile, LOCK_UN);
         sleep(15);
@@ -29,7 +29,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFileExists(RUNNER_STARTED);
     }
 
-    function test_wait_for_lock()
+    public function test_wait_for_lock()
     {
         file_put_contents(PUBLIC_IP, EIP);
         sleep(15);
@@ -39,7 +39,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFileExists(RUNNER_STARTED);
     }
 
-    function test_no_eip()
+    public function test_no_eip()
     {
         flock($this->lockfile, LOCK_UN);
         sleep(11);
@@ -47,7 +47,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFileDoesNotExist(RUNNER_STARTED);
     }
 
-    function test_no_lock()
+    public function test_no_lock()
     {
         file_put_contents(PUBLIC_IP, EIP);
         sleep(11);
@@ -55,7 +55,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFileDoesNotExist(RUNNER_STARTED);
     }
 
-    function test_eip_stolen()
+    public function test_eip_stolen()
     {
         file_put_contents(PUBLIC_IP, EIP);
         flock($this->lockfile, LOCK_UN);
@@ -68,7 +68,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertTrue(flock($this->lockfile, LOCK_EX | LOCK_NB));
     }
 
-    function test_locked_while_running()
+    public function test_locked_while_running()
     {
         file_put_contents(PUBLIC_IP, EIP);
         flock($this->lockfile, LOCK_UN);
@@ -77,7 +77,7 @@ class Test_Singleton extends CavalcadeRunner_TestCase
         $this->assertFalse(flock($this->lockfile, LOCK_EX | LOCK_NB));
     }
 
-    function test_maintenance_mode()
+    public function test_maintenance_mode()
     {
         file_put_contents(DOT_MAINTENANCE, '<?php ');
 

@@ -4,7 +4,7 @@ namespace HM\Cavalcade\Runner\Tests;
 
 class Test_DB_Schema extends CavalcadeRunner_TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         global $wpdb;
 
@@ -91,6 +91,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_clean_old_completed()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (10, 1, 'do_pings', 'a:0:{}', '2020-12-13 02:37:43', NULL, 'completed', NULL, '2021-03-01 04:56:05', '2021-03-01 04:56:05', NULL, NULL, NULL)");
         $this->wait_for_runner_to_work();
         $this->assertCount(0, $this->get_all());
@@ -99,6 +100,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_clean_old_failed()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (13, 1, 'do_pings', 'a:0:{}', '2020-12-13 03:33:48', NULL, 'failed', NULL, '2021-03-01 04:56:05', '2021-03-01 04:56:05', NULL, NULL, NULL)");
         $this->wait_for_runner_to_work();
         $this->assertCount(0, $this->get_all());
@@ -107,6 +109,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_completed_to_done()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (11, 1, 'do_pings', 'a:0:{}', '2020-12-13 02:57:43', NULL, 'completed', NULL, '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2020-12-13 02:57:43', '2020-12-13 02:57:43', NULL)");
         $this->wait_for_runner_to_work();
         $this->assertEquals('done', $this->get_all()[0]->status);
@@ -115,6 +118,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_failed_to_done()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (12, 1, 'do_pings', 'a:0:{}', '2020-12-13 03:07:43', NULL, 'failed', NULL, '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2020-12-13 03:07:43', '2020-12-13 03:07:43', NULL)");
         $this->wait_for_runner_to_work();
         $this->assertEquals('done', $this->get_all()[0]->status);
@@ -123,6 +127,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_delete_now()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (4, 1, 'wp_version_check', 'a:0:{}', '2021-03-19 01:21:00', 43200, 'waiting', 'twicedaily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 13:21:01', '2021-03-18 13:21:08', '2021-03-18 13:21:08')");
         $this->wait_for_runner_to_work();
         $this->assertCount(0, $this->get_all());
@@ -131,6 +136,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_set_hook_instance_for_non_recurring()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (61, 1, 'publish_future_post', 'a:1:{i:0;i:102;}', '2021-04-22 10:51:00', NULL, 'waiting', NULL, '2021-03-22 10:51:36', '2021-03-22 10:51:36', NULL, NULL, NULL)");
         $this->wait_for_runner_to_work();
         $this->assertEquals('2021-04-22 10:51:00', $this->get_all()[0]->hook_instance);
@@ -139,6 +145,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_hook_instance_not_set_for_non_recurring()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (47, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 04:56:02', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:17', '2021-03-18 04:56:19', NULL)");
         $this->wait_for_runner_to_work();
         $this->assertEquals('', $this->get_all()[0]->hook_instance);
@@ -147,7 +154,9 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_set_args_digest()
     {
         global $wpdb;
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (53, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 04:56:04', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:22', '2021-03-18 04:56:24', NULL)");
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (62, 1, 'publish_future_post', 'a:1:{i:0;i:102;}', '2021-05-22 10:51:00', NULL, 'waiting', NULL, '2021-03-22 10:51:36', '2021-03-22 10:51:36', NULL, NULL, NULL)");
 
         $this->wait_for_runner_to_work();
@@ -160,6 +169,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     public function test_unique()
     {
         global $wpdb;
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (1, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 01:21:00', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 01:21:01', '2021-03-18 01:21:04', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (8, 1, 'delete_expired_transients', 'a:0:{}', '2021-03-19 02:55:26', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 02:55:27', '2021-03-18 02:55:29', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (10, 1, 'do_pings', 'a:0:{}', '2020-12-12 02:57:43', NULL, 'completed', NULL, '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2020-12-13 02:57:43', '2020-12-13 02:57:43', NULL)");
@@ -168,6 +178,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
         $wpdb->query("INSERT INTO `$this->table` VALUES (47, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 04:56:02', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:17', '2021-03-18 04:56:19', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (53, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 04:56:04', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:22', '2021-03-18 04:56:24', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (54, 1, 'recovery_mode_clean_expired_keys', 'a:1:{i:0;i:102;}', '2021-03-19 04:56:04', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:22', '2021-03-18 04:56:24', NULL)");
+        // phpcs:enable
 
         $this->wait_for_runner_to_work();
 
@@ -184,6 +195,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
     {
         global $wpdb;
 
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (1, 1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '2021-03-19 01:21:00', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 01:21:01', '2021-03-18 01:21:04', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (2, 1, 'wp_site_health_scheduled_check', 'a:0:{}', '2021-03-22 01:21:00', 604800, 'waiting', 'weekly', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-15 01:21:01', '2021-03-15 01:21:14', NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (4, 1, 'wp_version_check', 'a:0:{}', '2021-03-19 01:21:00', 43200, 'waiting', 'twicedaily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 13:21:01', '2021-03-18 13:21:08', '2021-03-18 13:21:08')");
@@ -200,6 +212,7 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
         $wpdb->query("INSERT INTO `$this->table` VALUES (62, 1, 'publish_future_post', 'a:1:{i:0;i:102;}', '2021-05-22 10:51:00', NULL, 'waiting', NULL, '2021-03-22 10:51:36', '2021-03-22 10:51:36', NULL, NULL, NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (63, 1, 'publish_future_post', 'a:1:{i:0;i:333;}', '2021-05-22 10:51:00', NULL, 'waiting', NULL, '2021-03-22 10:51:36', '2021-03-22 10:51:36', NULL, NULL, NULL)");
         $wpdb->query("INSERT INTO `$this->table` VALUES (64, 1, 'publish_future_post', 'a:1:{i:0;i:333;}', '2021-05-22 10:51:00', NULL, 'waiting', NULL, '2021-03-22 10:51:36', '2021-03-22 10:51:36', NULL, NULL, NULL)");
+        // phpcs:enable
 
         $expected_data = [
             [
@@ -385,9 +398,11 @@ class Test_DB_Schema extends CavalcadeRunner_TestCase
 
         $this->wait_for_runner_to_work();
 
+        // phpcs:ignore Generic.Files.LineLength.TooLong
         $wpdb->query("INSERT INTO `$this->table` VALUES (53, 1, 'recovery_mode_clean_expired_keys', '', 'a:0:{}', '35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3', '2021-03-19 04:56:04', 86400, 'waiting', 'daily', '2021-03-01 04:56:05', '2021-03-01 04:56:05', '2021-03-18 04:56:22', '2021-03-18 04:56:24', '9999-12-31 23:59:59')");
         $suppress = $wpdb->suppress_errors();
         try {
+            // phpcs:ignore Generic.Files.LineLength.TooLong
             $wpdb->query("INSERT INTO `$this->table` (`site`, `hook`, `args`, `args_digest`, `nextrun`, `interval`, `schedule`) VALUES (1, 'recovery_mode_clean_expired_keys', 'a:0:{}', '35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3', '2021-03-19 04:56:04', 86400, 'daily')");
             $errno = mysqli_errno($wpdb->getDbh());
         } finally {

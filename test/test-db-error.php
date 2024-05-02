@@ -14,7 +14,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         file_get_contents(WPCLI_WPTEST_FIFO);
     }
 
-    function test_acquire_lock_error()
+    public function test_acquire_lock_error()
     {
         wp_schedule_single_event(time(), 'test_job_acquiring_lock_error');
 
@@ -31,7 +31,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertBetweenWeak(2, 3, $count);
     }
 
-    function test_cancel_lock_error()
+    public function test_cancel_lock_error()
     {
         wp_schedule_single_event(time(), 'test_job_canceling_lock_error');
 
@@ -65,7 +65,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertTrue($fatal_error);
     }
 
-    function test_job_finishing_error()
+    public function test_job_finishing_error()
     {
         wp_schedule_single_event(time(), 'test_job_finishing_error');
 
@@ -96,7 +96,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertTrue($fatal_error);
     }
 
-    function test_lost_connection_error()
+    public function test_lost_connection_error()
     {
         wp_schedule_single_event(time(), 'test_lost_connection_error');
 
@@ -130,7 +130,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertFalse($fatal_error);
     }
 
-    function test_packet_out_of_order_error()
+    public function test_packet_out_of_order_error()
     {
         wp_schedule_single_event(time(), 'test_packet_out_of_order_error');
 
@@ -170,7 +170,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertFalse($fatal_error);
     }
 
-    function test_repeating_packet_out_of_order_error()
+    public function test_repeating_packet_out_of_order_error()
     {
         wp_schedule_single_event(time(), 'test_repeating_packet_out_of_order_error');
 
@@ -204,7 +204,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertTrue($fatal_error);
     }
 
-    function test_unknown_php_error()
+    public function test_unknown_php_error()
     {
         wp_schedule_single_event(time(), 'test_unknown_php_error');
 
@@ -250,7 +250,7 @@ class Test_DB_Error extends CavalcadeRunner_TestCase
         $this->assertFalse($fatal_error);
     }
 
-    function test_repeating_unknown_php_error()
+    public function test_repeating_unknown_php_error()
     {
         wp_schedule_single_event(time(), 'test_repeating_unknown_php_error');
 

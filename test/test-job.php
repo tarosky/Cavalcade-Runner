@@ -4,8 +4,6 @@ namespace HM\Cavalcade\Runner\Tests;
 
 class Test_Job extends CavalcadeRunner_TestCase
 {
-    const DATE_FORMAT = 'Y-m-d H:i:s';
-
     private static function go_wpcli_blocking()
     {
         file_put_contents(WPTEST_WPCLI_FIFO, "\n");
@@ -31,7 +29,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         return mysql2date('G', $mysql_time);
     }
 
-    function test_single_event()
+    public function test_single_event()
     {
         $pre_time = time();
         wp_schedule_single_event($pre_time, JOB, [__FUNCTION__]);
@@ -76,7 +74,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB));
     }
 
-    function test_deleted_event()
+    public function test_deleted_event()
     {
         global $wpdb;
 
@@ -91,7 +89,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB));
     }
 
-    function test_schedule_event()
+    public function test_schedule_event()
     {
         $pre_time = time();
         wp_schedule_event($pre_time, RECUR_HOURLY, JOB, [__FUNCTION__]);
@@ -129,7 +127,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertEquals(STATUS_WAITING, $job->status);
     }
 
-    function test_unschedule_immediately()
+    public function test_unschedule_immediately()
     {
         $pre_time = time();
         wp_schedule_single_event($pre_time, JOB, [__FUNCTION__]);
@@ -161,7 +159,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB));
     }
 
-    function test_clear_schedule_immediately()
+    public function test_clear_schedule_immediately()
     {
         $pre_time = time();
         wp_schedule_event($pre_time, RECUR_HOURLY, JOB, [__FUNCTION__]);
@@ -194,7 +192,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB));
     }
 
-    function test_failed_event()
+    public function test_failed_event()
     {
         $pre_time = time();
         wp_schedule_single_event($pre_time, JOB_FAILED, [__FUNCTION__]);
@@ -226,7 +224,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB_FAILED));
     }
 
-    function test_chatty_event()
+    public function test_chatty_event()
     {
         wp_schedule_single_event(time(), JOB_CHATTY);
 
@@ -249,7 +247,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->fail();
     }
 
-    function test_maintenance_mode()
+    public function test_maintenance_mode()
     {
         wp_schedule_single_event(time(), JOB_LONG, [__FUNCTION__]);
 
@@ -269,7 +267,7 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertEquals(STATUS_DONE, $job->status);
     }
 
-    function test_sigterm()
+    public function test_sigterm()
     {
         wp_schedule_single_event(time(), JOB_LONG, [__FUNCTION__]);
 

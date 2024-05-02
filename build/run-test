@@ -4,5 +4,6 @@ set -eu
 
 trap 'docker-compose -f build/docker-compose.yml down' EXIT
 
+# shellcheck disable=SC1091
 source build/envs.sh
 docker-compose -f build/docker-compose.yml run --rm wordpress

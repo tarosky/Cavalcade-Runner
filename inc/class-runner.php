@@ -681,7 +681,13 @@ class Runner
             }
 
             try {
-                $this->hooks->run('Runner.check_workers.job_finishing', $this->db->get_connection(), $worker, $worker->job);
+                $this->hooks->run(
+                    'Runner.check_workers.job_finishing',
+                    $this->db->get_connection(),
+                    $worker,
+                    $worker->job
+                );
+
                 if ($worker->shutdown()) {
                     $worker->job->mark_done();
                     $this->log->info_app('job completed', $worker->log_values_full());

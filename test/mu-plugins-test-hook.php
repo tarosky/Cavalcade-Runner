@@ -8,6 +8,7 @@ const JOB_FAILED = 'test_job_failed';
 const JOB_LONG = 'test_job_long';
 const WPTEST_WPCLI_FIFO = '/workspace/work/log/wptest-wpcli.fifo';
 const WPCLI_WPTEST_FIFO = '/workspace/work/log/wpcli-wptest.fifo';
+// phpcs:ignore Generic.Files.LineLength.TooLong
 const TEXT_124 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n";
 
 function go_wptest_blocking()

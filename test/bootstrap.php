@@ -13,6 +13,7 @@ const CAVALCADE_TEST_BIN = '/workspace/bin/cavalcade-runner-test';
 
 $cavalcade_for_testing = file_get_contents('/workspace/bin/cavalcade-runner');
 
+// phpcs:disable Generic.Files.LineLength.TooLong
 const CAVALCADE_HOOK = <<<'EOS'
 $runner->hooks->register('Runner.run.before', function () {
     file_put_contents('/workspace/work/log/runner-started', "\n");
@@ -70,6 +71,7 @@ $runner->hooks->register('Runner.check_workers.job_finishing', function ($db, $w
     }
 });
 EOS;
+// phpcs:enable
 
 const CAVALCADE_PDOCLASS = <<<'EOS'
 $pdoclass = 'HM\Cavalcade\Runner\PDOTester';

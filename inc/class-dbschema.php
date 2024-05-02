@@ -14,6 +14,7 @@ class DBSchema
 
     private $log;
     private $db;
+    private $table;
     private $log_table;
     private $charset;
     private $collate;
@@ -49,23 +50,32 @@ class DBSchema
             switch ($this->schema_version) {
                 case 2:
                     $this->upgrade_database_to_3();
+                    // fall-through
                 case 3:
                     $this->upgrade_database_to_4();
+                    // fall-through
                 case 4:
                     $this->upgrade_database_to_5();
+                    // fall-through
                 case 5:
                     $this->upgrade_database_to_6();
+                    // fall-through
                 case 6:
                     $this->upgrade_database_to_7();
+                    // fall-through
                 case 7:
                 case 8:
                     $this->upgrade_database_to_9();
+                    // fall-through
                 case 9:
                     $this->upgrade_database_to_10();
+                    // fall-through
                 case 10:
                     $this->upgrade_database_to_11();
+                    // fall-through
                 case 11:
                     $this->upgrade_database_to_12();
+                    // fall-through
                     break;
                 case 1:
                     $this->log->fatal('update from database version 1 is no longer supported');

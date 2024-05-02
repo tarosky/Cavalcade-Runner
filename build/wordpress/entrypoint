@@ -35,6 +35,7 @@ cp test/mu-plugins-test-hook.php /www-work/wp-content/mu-plugins/test-hook.php
 
 wait-for-it -q db:3306
 build/common/wait-for-file "$runner_ctrl"
+# shellcheck disable=SC2064
 trap "echo destroy_all > $runner_ctrl" EXIT
 
 # Setup log destination for this init process.
