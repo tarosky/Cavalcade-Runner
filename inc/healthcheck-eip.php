@@ -22,16 +22,29 @@ $get_current_ips = (function () {
 
     $renew_token = function () use (&$token) {
         $ch = curl_init(IMDSV2_TOKEN_URL);
+        curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-aws-ec2-metadata-token-ttl-seconds: 21600']);
         curl_setopt($ch, CURLOPT_PUT, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $content = curl_exec($ch);
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $content = substr($response, $header_size);
         curl_close($ch);
+
+        if ($status !== 200) {
+            return;
+        }
+
         $token = $content;
     };
 
     $get = null;
     $get = function ($url, $retry_count = 0) use (&$get, &$token, $renew_token) {
+        if ($token === null) {
+            throw new MetadataError('failed to get token');
+        }
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-aws-ec2-metadata-token: $token"]);
