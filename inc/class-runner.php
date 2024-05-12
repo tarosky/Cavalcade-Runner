@@ -448,7 +448,7 @@ class Runner
 
         $this->hooks->run('Runner.run.before');
 
-        $prev_cleanup = time();
+        $prev_cleanup = 0;
         try {
             while (true) {
                 pcntl_signal_dispatch();
@@ -621,7 +621,9 @@ class Runner
         $worker = new Worker($process, $pipes, $job, $this->log, $error_log_file, $this->max_log_size);
         $this->workers[] = $worker;
 
-        $this->log->debug('worker started', $job->log_values());
+        $this->log->debug('worker started', $job->log_values() + [
+            'execution_delay' => $job->execution_delay,
+        ]);
         $this->hooks->run('Runner.run_job.started', $worker, $job);
     }
 

@@ -25,6 +25,8 @@ class Job
     public $finished_at;
     public $deleted_at;
 
+    public $execution_delay;
+
     protected $db;
     protected $table_prefix;
     protected $table;
@@ -114,6 +116,9 @@ class Job
 
         $started_at = new DateTime('now', new DateTimeZone('UTC'));
         $this->started_at = $started_at->format(MYSQL_DATE_FORMAT);
+
+        $nextrun = DateTime::createFromFormat('Y-m-d H:i:s', $this->nextrun, new DateTimeZone('UTC'));
+        $this->execution_delay = $started_at->getTimestamp() - $nextrun->getTimestamp();
 
         $res = $this->db->prepare_query(
             "UPDATE `$this->table`
