@@ -42,6 +42,8 @@ $get_current_ips = (function () {
     $get = null;
     $get = function ($url, $retry_count = 0) use (&$get, &$token, $renew_token) {
         if ($token === null) {
+            // Never run after startup
+            $renew_token();
             throw new MetadataError('failed to get token');
         }
 
@@ -57,6 +59,7 @@ $get_current_ips = (function () {
 
         if ($status !== 200) {
             if ($status === 401) {
+                // Never run during startup
                 $renew_token();
             }
             if ($retry_count < MAX_RETRY) {
