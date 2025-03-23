@@ -74,6 +74,58 @@ class Test_Job extends CavalcadeRunner_TestCase
         $this->assertNull($this->get_job(JOB));
     }
 
+    public function test_ms_single_event_without_siteid()
+    {
+        global $wpdb;
+
+        if (getenv('WP_MULTISITE') !== '1') {
+            $this->markTestSkipped('Not multisite');
+            return;
+        }
+
+        $pre_time = time();
+        wp_schedule_single_event($pre_time, JOB, [__FUNCTION__]);
+        $job = $this->get_job(JOB);
+        $wpdb->query("UPDATE `$this->table` SET `site` = 9999 WHERE `id` = $job->id");
+        $this->assertEquals(STATUS_WAITING, $job->status);
+        $this->assertNull($job->started_at);
+        $this->assertNull($job->finished_at);
+
+        sleep(3);
+
+        $post_time = time();
+        $job = $this->get_job(JOB);
+        $this->assertEquals(STATUS_DONE, $job->status);
+        $this->assertBetweenWeak($pre_time, $post_time, self::as_epoch($job->started_at));
+        $this->assertBetweenWeak($pre_time, $post_time, self::as_epoch($job->finished_at));
+        $this->assertEquals(EMPTY_DELETED_AT, $job->deleted_at);
+
+        $this->assertBetweenWeak(
+            strtotime('-1 minutes'),
+            time(),
+            self::as_epoch($job->nextrun),
+        );
+
+        sleep(3);
+
+        $job = $this->get_job(JOB);
+        $this->assertEquals(STATUS_DONE, $job->status);
+
+        sleep(6);
+
+        $this->assertNull($this->get_job(JOB));
+
+        $log_lines = explode("\n", file_get_contents(RUNNER_LOG));
+        foreach ($log_lines as $line) {
+            if (strstr($line, '"ERROR"') !== false) {
+                $this->assertStringContainsString('"job failed; failed to get site id for job"', $line);
+                $this->assertStringContainsString('"app"', $line);
+                return;
+            }
+        }
+        $this->fail();
+    }
+
     public function test_deleted_event()
     {
         global $wpdb;

@@ -4,4 +4,4 @@ set -eu
 
 # shellcheck disable=SC1091
 source build/envs.sh
-exec docker-compose -f build/docker-compose.yml run --rm cavalcade-runner validate
+exec docker compose -f build/docker-compose.yml run --rm cavalcade-runner validate

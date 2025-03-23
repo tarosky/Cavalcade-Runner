@@ -604,6 +604,10 @@ class Runner
                 @fclose($pipes[2]);
                 throw new Exception('failed to set stdout to non-blocking');
             }
+        } catch (SiteNotFoundException $e) {
+            $job->mark_done();
+            $this->log->error_app('job failed; failed to get site id for job', $job->log_values_full());
+            return;
         } catch (Exception $e) {
             $this->log->error('exception during starting job', [
                 'ex_message' => $e->getMessage(),
