@@ -93,10 +93,18 @@ class Job
                 $stmt->execute();
 
                 $data = $stmt->fetch(PDO::FETCH_OBJ);
+                if ($data === false) {
+                    return false;
+                }
+
                 return $data->domain . $data->path;
             },
             true,
         );
+
+        if ($res === false) {
+            throw new SiteNotFoundException('site id not found');
+        }
 
         $this->log->debug('site url', ['siteurl' => $res] + $this->log_values());
 
@@ -120,11 +128,14 @@ class Job
         $nextrun = DateTime::createFromFormat('Y-m-d H:i:s', $this->nextrun, new DateTimeZone('UTC'));
         $this->execution_delay = $started_at->getTimestamp() - $nextrun->getTimestamp();
 
+        $this->status = 'running';
+
         $res = $this->db->prepare_query(
             "UPDATE `$this->table`
-             SET `status` = 'running', `started_at` = :started_at
+             SET `status` = :status, `started_at` = :started_at
              WHERE `status` = 'waiting' AND id = :id",
             function ($stmt) {
+                $stmt->bindValue(':status', $this->status);
                 $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
                 $stmt->bindValue(':started_at', $this->started_at);
                 $stmt->execute();
@@ -147,12 +158,17 @@ class Job
     {
         $this->log->debug('canceling lock', $this->log_values());
 
+        $this->status = 'waiting';
+        $this->started_at = null;
+
         $this->db->prepare_query(
             "UPDATE `$this->table`
-             SET `status` = 'waiting', `started_at` = NULL
+             SET `status` = :status, `started_at` = :started_at
              WHERE id = :id",
             function ($stmt) {
+                $stmt->bindValue(':status', $this->status);
                 $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+                $stmt->bindValue(':started_at', $this->started_at);
                 $stmt->execute();
             },
             true,
@@ -172,11 +188,14 @@ class Job
             $this->reschedule();
             $this->log->debug('rescheduled', $this->log_values());
         } else {
+            $this->status = 'done';
+
             $this->db->prepare_query(
                 "UPDATE `$this->table`
-                 SET `status` = 'done', `finished_at` = :finished_at
+                 SET `status` = :status, `finished_at` = :finished_at
                  WHERE `id` = :id",
                 function ($stmt) {
+                    $stmt->bindValue(':status', $this->status);
                     $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
                     $stmt->bindValue(':finished_at', $this->finished_at);
                     $stmt->execute();

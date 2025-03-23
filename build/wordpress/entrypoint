@@ -48,3 +48,4 @@ cat "$ctrl_done_fifo" > /dev/null
 mv work/log work/test-logs/entrypoint
 
 vendor/bin/phpunit --log-junit work/test-result.xml
+# vendor/bin/phpunit --log-junit work/test-result.xml --filter test_ms_single_event_without_siteid
