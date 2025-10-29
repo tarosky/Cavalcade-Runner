@@ -9,8 +9,6 @@ include dirname(__DIR__) . '/autoload.php';
 
 date_default_timezone_set('UTC');
 $log = Logger::create('work/log/create-table.log');
-$wpcli_path = '/usr/local/bin/wp';
-$wp_path = '/var/web/wp';
 
 set_error_handler(function ($errno, $errstr, $errfile, $errline) use ($log) {
   // error was suppressed with the @-operator

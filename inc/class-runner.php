@@ -27,7 +27,8 @@ class Runner
     protected $pdoclass;
     protected $db;
     protected $workers = [];
-    protected $wp_path;
+    protected $wp_base_path;
+    protected $wpconfig_path;
     protected $table_prefix;
     protected $table;
     protected $state;
@@ -40,6 +41,7 @@ class Runner
         $pdoclass,
         $max_workers,
         $wpcli_path,
+        $wpconfig_path,
         $cleanup_interval,
         $cleanup_delay,
         $wp_base_path,
@@ -49,9 +51,10 @@ class Runner
         $this->pdoclass = $pdoclass;
         $this->max_workers = $max_workers;
         $this->wpcli_path = $wpcli_path;
+        $this->wpconfig_path = $wpconfig_path;
         $this->cleanup_interval = $cleanup_interval;
         $this->cleanup_delay = $cleanup_delay;
-        $this->wp_path = realpath($wp_base_path);
+        $this->wp_base_path = $wp_base_path;
         $this->max_log_size = $max_log_size;
         $this->state_path = $state_path;
         $this->hooks = new Hooks();
@@ -68,6 +71,7 @@ class Runner
         $pdoclass,
         $max_workers,
         $wpcli_path,
+        $wpconfig_path,
         $cleanup_interval,
         $cleanup_delay,
         $wp_base_path,
@@ -80,6 +84,7 @@ class Runner
                 $pdoclass,
                 $max_workers,
                 $wpcli_path,
+                $wpconfig_path,
                 $cleanup_interval,
                 $cleanup_delay,
                 $wp_base_path,
@@ -126,15 +131,8 @@ class Runner
     {
         $this->load_state();
 
-        $config_path = $this->wp_path . '/wp-config.php';
-        if (!file_exists($config_path)) {
-            $config_path = realpath($this->wp_path . '/../wp-config.php');
-            if (!file_exists($config_path)) {
-                throw new Exception(sprintf(
-                    'Could not find config file at %s',
-                    $this->wp_path . '/wp-config.php or next level up.'
-                ));
-            }
+        if (!file_exists($this->wpconfig_path)) {
+            throw new Exception('Could not find config file at ' . $this->wpconfig_path);
         }
 
         // Load configuration ONLY
@@ -143,7 +141,7 @@ class Runner
             $_SERVER['HTTP_HOST'] = 'cavalcade.example';
         }
 
-        include $config_path;
+        include $this->wpconfig_path;
         $this->table_prefix = isset($table_prefix) ? $table_prefix : 'wp_';
         $this->table = $this->table_prefix . 'cavalcade_jobs';
         $charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8mb4';
@@ -528,11 +526,6 @@ class Runner
         unset($this->db);
     }
 
-    public function get_wp_path()
-    {
-        return $this->wp_path;
-    }
-
     protected function get_next_job()
     {
         // $this->log->debug('trying to get next job');
@@ -592,7 +585,15 @@ class Runner
                 1 => ['pipe', 'w'], // stdout
                 2 => ['pipe', 'w'], // stderr
             ];
-            $process = proc_open($command, $spec, $pipes, $this->wp_path);
+
+            // Resolve path every time to support atomic deployment.
+            $wp_path = realpath($this->wp_base_path);
+            if ($wp_path === false) {
+                $this->log->error('failed to resolve path: ' . $this->wp_base_path);
+                throw new Exception('failed to resolve path');
+            }
+
+            $process = proc_open($command, $spec, $pipes, $wp_path);
 
             if ($process === false) {
                 throw new Exception('unable to proc_open()');
