@@ -8,12 +8,13 @@ use Throwable;
 
 include dirname(__DIR__) . '/autoload.php';
 
-$options = getopt('l:p:b:w:c:i:d:e:k:z:s:q:');
+$options = getopt('l:p:b:w:c:f:i:d:e:k:z:s:q:');
 $log_path = $options['l'] ?? '/var/log/wp/cron.log';
 $pid_file = $options['p'] ?? '/run/cavalcade-runner/cavalcade-runner.pid';
 $wp_base_path = $options['b'] ?? '/var/web/wp';
 $max_workers_count = intval($options['w'] ?? 2);
 $wpcli_path = $options['c'] ?? '/usr/local/bin/wp';
+$wpconfig_path = $options['f'];
 $cleanup_interval = intval($options['i'] ?? 60);
 $cleanup_delay = intval($options['d'] ?? 24 * 60 * 60);
 $healthcheck_option = $options['e'];
@@ -64,6 +65,7 @@ try {
         $pdoclass,
         $max_workers_count,
         $wpcli_path,
+        $wpconfig_path,
         $cleanup_interval,
         $cleanup_delay,
         $wp_base_path,
