@@ -578,13 +578,6 @@ class Runner
                 $this->log->error('failed to create tmp file');
                 throw new Exception('failed to create tmp file');
             }
-            $command = $this->job_command($job, $error_log_file);
-            $this->log->debug_app('preparing for worker', ['job_id' => $job->id, 'command' => $command]);
-
-            $spec = [
-                1 => ['pipe', 'w'], // stdout
-                2 => ['pipe', 'w'], // stderr
-            ];
 
             // Resolve path every time to support atomic deployment.
             $wp_path = realpath($this->wp_base_path);
@@ -592,6 +585,14 @@ class Runner
                 $this->log->error('failed to resolve path: ' . $this->wp_base_path);
                 throw new Exception('failed to resolve path');
             }
+
+            $command = $this->job_command($job, $error_log_file, $wp_path);
+            $this->log->debug_app('preparing for worker', ['job_id' => $job->id, 'command' => $command]);
+
+            $spec = [
+                1 => ['pipe', 'w'], // stdout
+                2 => ['pipe', 'w'], // stderr
+            ];
 
             $process = proc_open($command, $spec, $pipes, $wp_path);
 
@@ -632,11 +633,11 @@ class Runner
         $this->hooks->run('Runner.run_job.started', $worker, $job);
     }
 
-    protected function job_command($job, $error_log_file)
+    protected function job_command($job, $error_log_file, $wp_path)
     {
         $siteurl = $job->get_site_url();
 
-        $command = "php -d error_log=$error_log_file $this->wpcli_path --no-color cavalcade run $job->id";
+        $command = "php -d error_log=$error_log_file $this->wpcli_path --path=$wp_path --no-color cavalcade run $job->id";
 
         if ($siteurl) {
             $command .= ' --url=' . escapeshellarg($siteurl);
